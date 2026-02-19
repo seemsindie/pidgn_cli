@@ -3,6 +3,10 @@ const Allocator = std.mem.Allocator;
 const controller_tmpl = @import("../templates/controller.zig");
 const model_tmpl = @import("../templates/model.zig");
 const channel_tmpl = @import("../templates/channel.zig");
+const mailer_tmpl = @import("../templates/mailer.zig");
+const mailer_with_templates_tmpl = @import("../templates/mailer_with_templates.zig");
+const mailer_html_tmpl = @import("../templates/mailer_html_template.zig");
+const mailer_txt_tmpl = @import("../templates/mailer_txt_template.zig");
 
 /// `zzz gen <type> <Name> [fields...]` -- generate code from templates.
 pub fn run(args: []const []const u8, _: Allocator, io: std.Io) void {
@@ -14,6 +18,7 @@ pub fn run(args: []const []const u8, _: Allocator, io: std.Io) void {
             \\  zzz gen controller <Name>
             \\  zzz gen model <Name> [field:type ...]
             \\  zzz gen channel <Name>
+            \\  zzz gen mailer <Name> [--template]
             \\
             \\Field types: string, text, integer, int, float, real, boolean, bool
             \\
@@ -21,6 +26,8 @@ pub fn run(args: []const []const u8, _: Allocator, io: std.Io) void {
             \\  zzz gen controller Users
             \\  zzz gen model Post title:string body:text user_id:integer
             \\  zzz gen channel Chat
+            \\  zzz gen mailer Welcome
+            \\  zzz gen mailer Welcome --template
             \\
         ) catch {};
         return;
@@ -39,11 +46,18 @@ pub fn run(args: []const []const u8, _: Allocator, io: std.Io) void {
         generateModel(name_lower, name_upper, args[2..], io);
     } else if (std.mem.eql(u8, gen_type, "channel")) {
         generateChannel(name_lower, name_upper, io);
+    } else if (std.mem.eql(u8, gen_type, "mailer")) {
+        const use_templates = hasFlag(args[2..], "--template");
+        if (use_templates) {
+            generateMailerWithTemplates(name_lower, name_upper, io);
+        } else {
+            generateMailer(name_lower, name_upper, io);
+        }
     } else {
         var buf: [256]u8 = undefined;
         const msg = std.fmt.bufPrint(&buf, "Unknown generator type: {s}\n", .{gen_type}) catch "Unknown generator type.\n";
         stderr_file.writeStreamingAll(io, msg) catch {};
-        stderr_file.writeStreamingAll(io, "Available: controller, model, channel\n") catch {};
+        stderr_file.writeStreamingAll(io, "Available: controller, model, channel, mailer\n") catch {};
     }
 }
 
@@ -147,6 +161,89 @@ fn generateChannel(name_lower: []const u8, name_upper: []const u8, io: std.Io) v
     var msg_buf: [256]u8 = undefined;
     const msg = std.fmt.bufPrint(&msg_buf, "  Generated: {s}\n", .{path}) catch "  Generated channel.\n";
     stdout_file.writeStreamingAll(io, msg) catch {};
+}
+
+fn generateMailer(name_lower: []const u8, name_upper: []const u8, io: std.Io) void {
+    const stdout_file = std.Io.File.stdout();
+    const stderr_file = std.Io.File.stderr();
+
+    var buf: [4096]u8 = undefined;
+    const content = mailer_tmpl.generate(name_lower, name_upper, &buf) orelse {
+        stderr_file.writeStreamingAll(io, "Failed to generate mailer template\n") catch {};
+        return;
+    };
+
+    var path_buf: [256]u8 = undefined;
+    const path = std.fmt.bufPrint(&path_buf, "src/mailers/{s}.zig", .{name_lower}) catch return;
+
+    // Ensure directory exists
+    std.Io.Dir.cwd().createDirPath(io, "src/mailers") catch {};
+
+    writeFile(path, content, io) catch return;
+
+    var msg_buf: [256]u8 = undefined;
+    const msg = std.fmt.bufPrint(&msg_buf, "  Generated: {s}\n", .{path}) catch "  Generated mailer.\n";
+    stdout_file.writeStreamingAll(io, msg) catch {};
+}
+
+fn generateMailerWithTemplates(name_lower: []const u8, name_upper: []const u8, io: std.Io) void {
+    const stdout_file = std.Io.File.stdout();
+    const stderr_file = std.Io.File.stderr();
+
+    // Ensure directories exist
+    std.Io.Dir.cwd().createDirPath(io, "src/mailers/templates") catch {};
+
+    // Generate mailer module (with @embedFile)
+    var mailer_buf: [4096]u8 = undefined;
+    const mailer_content = mailer_with_templates_tmpl.generate(name_lower, name_upper, &mailer_buf) orelse {
+        stderr_file.writeStreamingAll(io, "Failed to generate mailer template\n") catch {};
+        return;
+    };
+
+    var mailer_path_buf: [256]u8 = undefined;
+    const mailer_path = std.fmt.bufPrint(&mailer_path_buf, "src/mailers/{s}.zig", .{name_lower}) catch return;
+    if (writeFile(mailer_path, mailer_content, io)) |_| {
+        var msg_buf: [256]u8 = undefined;
+        const msg = std.fmt.bufPrint(&msg_buf, "  Generated: {s}\n", .{mailer_path}) catch "  Generated mailer.\n";
+        stdout_file.writeStreamingAll(io, msg) catch {};
+    } else |_| {}
+
+    // Generate HTML template
+    var html_buf: [2048]u8 = undefined;
+    const html_content = mailer_html_tmpl.generate(name_upper, &html_buf) orelse {
+        stderr_file.writeStreamingAll(io, "Failed to generate HTML template\n") catch {};
+        return;
+    };
+
+    var html_path_buf: [256]u8 = undefined;
+    const html_path = std.fmt.bufPrint(&html_path_buf, "src/mailers/templates/{s}.html.zzz", .{name_lower}) catch return;
+    if (writeFile(html_path, html_content, io)) |_| {
+        var msg_buf: [256]u8 = undefined;
+        const msg = std.fmt.bufPrint(&msg_buf, "  Generated: {s}\n", .{html_path}) catch "  Generated HTML template.\n";
+        stdout_file.writeStreamingAll(io, msg) catch {};
+    } else |_| {}
+
+    // Generate text template
+    var txt_buf: [2048]u8 = undefined;
+    const txt_content = mailer_txt_tmpl.generate(name_upper, &txt_buf) orelse {
+        stderr_file.writeStreamingAll(io, "Failed to generate text template\n") catch {};
+        return;
+    };
+
+    var txt_path_buf: [256]u8 = undefined;
+    const txt_path = std.fmt.bufPrint(&txt_path_buf, "src/mailers/templates/{s}.txt.zzz", .{name_lower}) catch return;
+    if (writeFile(txt_path, txt_content, io)) |_| {
+        var msg_buf: [256]u8 = undefined;
+        const msg = std.fmt.bufPrint(&msg_buf, "  Generated: {s}\n", .{txt_path}) catch "  Generated text template.\n";
+        stdout_file.writeStreamingAll(io, msg) catch {};
+    } else |_| {}
+}
+
+fn hasFlag(args: []const []const u8, flag: []const u8) bool {
+    for (args) |arg| {
+        if (std.mem.eql(u8, arg, flag)) return true;
+    }
+    return false;
 }
 
 fn writeFile(path: []const u8, content: []const u8, io: std.Io) !void {
