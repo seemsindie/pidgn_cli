@@ -57,6 +57,14 @@ pub const build_zig =
 ;
 
 pub fn buildZigZon(name: []const u8, buf: []u8) ?[]const u8 {
+    // Sanitize name for use as a Zig identifier (replace dots/hyphens with underscores)
+    var ident_buf: [128]u8 = undefined;
+    const ident_len = @min(name.len, ident_buf.len);
+    for (0..ident_len) |i| {
+        ident_buf[i] = if (std.ascii.isAlphanumeric(name[i]) or name[i] == '_') name[i] else '_';
+    }
+    const ident = ident_buf[0..ident_len];
+
     return std.fmt.bufPrint(buf,
         \\.{{
         \\    .name = .{s},
@@ -64,7 +72,7 @@ pub fn buildZigZon(name: []const u8, buf: []u8) ?[]const u8 {
         \\    .minimum_zig_version = "0.16.0-dev.2535+b5bd49460",
         \\    .dependencies = .{{
         \\        .zzz = .{{
-        \\            .path = "../zzz",
+        \\            .path = "../zzz.zig",
         \\        }},
         \\    }},
         \\    .paths = .{{
@@ -75,7 +83,7 @@ pub fn buildZigZon(name: []const u8, buf: []u8) ?[]const u8 {
         \\    }},
         \\}}
         \\
-    , .{name}) catch null;
+    , .{ident}) catch null;
 }
 
 pub const main_zig =
@@ -479,7 +487,7 @@ pub const dockerfile =
     \\WORKDIR /build
     \\
     \\# Clone zzz framework
-    \\RUN git clone --depth 1 https://github.com/seemsindie/zzz.git ../zzz
+    \\RUN git clone --depth 1 https://github.com/seemsindie/zzz.zig.git ../zzz.zig
     \\
     \\COPY . .
     \\RUN zig build -Doptimize=ReleaseSafe -Denv=prod

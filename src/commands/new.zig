@@ -50,9 +50,9 @@ pub fn run(args: []const []const u8, _: Allocator, io: std.Io) void {
 
     // Validate name
     for (project_name) |c| {
-        if (!std.ascii.isAlphanumeric(c) and c != '_' and c != '-') {
+        if (!std.ascii.isAlphanumeric(c) and c != '_' and c != '-' and c != '.') {
             var err_buf: [256]u8 = undefined;
-            const msg = std.fmt.bufPrint(&err_buf, "Invalid project name: '{s}'. Use only letters, numbers, underscores, and hyphens.\n", .{project_name}) catch "Invalid project name.\n";
+            const msg = std.fmt.bufPrint(&err_buf, "Invalid project name: '{s}'. Use only letters, numbers, underscores, hyphens, and dots.\n", .{project_name}) catch "Invalid project name.\n";
             stderr_file.writeStreamingAll(io, msg) catch {};
             return;
         }
