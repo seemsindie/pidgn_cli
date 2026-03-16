@@ -1,10 +1,15 @@
 # zzz_cli
 
-Command-line tool for the zzz web framework. Provides project scaffolding, code generation, development server, database migrations, and more.
+Command-line tool for the zzz web framework.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Zig](https://img.shields.io/badge/Zig-0.16.0-orange.svg)](https://ziglang.org/)
+
+Project scaffolding, code generation, development server, database migrations, and more. A single binary that handles the full development workflow for zzz applications.
 
 ## Installation
 
-### Shell installer (macOS & Linux)
+### Shell installer (macOS and Linux)
 
 ```bash
 curl -fsSL https://zzz.seemsindie.com/install.sh | sh
@@ -14,6 +19,13 @@ Install a specific version:
 
 ```bash
 ZZZ_VERSION=v0.1.0 curl -fsSL https://zzz.seemsindie.com/install.sh | sh
+```
+
+### Homebrew (macOS)
+
+```bash
+brew tap seemsindie/zzz
+brew install zzz
 ```
 
 ### Download from GitHub Releases
@@ -158,10 +170,25 @@ zzz migrate
 zzz server
 ```
 
+## Documentation
+
+Full documentation available at [docs.zzz.seemsindie.com](https://docs.zzz.seemsindie.com) under the CLI section.
+
+## Ecosystem
+
+| Package | Description |
+|---------|-------------|
+| [zzz.zig](https://github.com/seemsindie/zzz.zig) | Core web framework |
+| [zzz_db](https://github.com/seemsindie/zzz_db) | Database ORM (SQLite + PostgreSQL) |
+| [zzz_jobs](https://github.com/seemsindie/zzz_jobs) | Background job processing |
+| [zzz_mailer](https://github.com/seemsindie/zzz_mailer) | Email sending |
+| [zzz_template](https://github.com/seemsindie/zzz_template) | Template engine |
+| [zzz_cli](https://github.com/seemsindie/zzz_cli) | CLI tooling |
+
 ## Requirements
 
 - Zig 0.16.0-dev.2535+b5bd49460 or later
 
 ## License
 
-MIT License - Copyright (c) 2026 Ivan Stamenkovic
+MIT License -- Copyright (c) 2026 Ivan Stamenkovic
