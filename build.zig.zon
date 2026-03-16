@@ -2,7 +2,7 @@
     .name = .zzz_cli,
     .version = "0.1.0",
     .fingerprint = 0xe8761108c845d94a,
-    .minimum_zig_version = "0.16.0-dev.2535+b5bd49460",
+    .minimum_zig_version = "0.16.0-dev.2905+5d71e3051",
     .dependencies = .{},
     .paths = .{
         "build.zig",
