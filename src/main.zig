@@ -7,8 +7,9 @@ const generate_cmd = @import("commands/generate.zig");
 const swagger_cmd = @import("commands/swagger.zig");
 const test_cmd = @import("commands/test_cmd.zig");
 const deps_cmd = @import("commands/deps.zig");
+const update_cmd = @import("commands/update.zig");
 
-const version = "0.2.0-beta.1";
+const version = "0.2.0-beta.2";
 
 pub fn main(init: std.process.Init) !void {
     const allocator = init.gpa;
@@ -52,6 +53,8 @@ pub fn main(init: std.process.Init) !void {
         return test_cmd.run(rest, allocator, io);
     } else if (std.mem.eql(u8, command, "deps")) {
         return deps_cmd.run(rest, allocator, io);
+    } else if (std.mem.eql(u8, command, "update")) {
+        return update_cmd.run(rest, allocator, io);
     } else if (std.mem.eql(u8, command, "version") or std.mem.eql(u8, command, "--version") or std.mem.eql(u8, command, "-v")) {
         printVersion(io);
     } else if (std.mem.eql(u8, command, "help") or std.mem.eql(u8, command, "--help") or std.mem.eql(u8, command, "-h")) {
@@ -96,6 +99,7 @@ fn printUsage(io: std.Io) void {
         \\  swagger                 Export OpenAPI specification
         \\  test                    Run project tests
         \\  deps                    List workspace dependencies
+        \\  update                  Update zzz CLI to the latest version
         \\  version                 Show version
         \\  help                    Show this help message
         \\
