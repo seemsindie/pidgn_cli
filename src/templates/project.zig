@@ -65,10 +65,18 @@ pub fn buildZigZon(name: []const u8, buf: []u8) ?[]const u8 {
     }
     const ident = ident_buf[0..ident_len];
 
+    // Generate a random fingerprint for the package
+    var fp_bytes: [8]u8 = undefined;
+    std.crypto.random.bytes(&fp_bytes);
+    const fingerprint: u64 = std.mem.readInt(u64, &fp_bytes, .big);
+    var fp_buf: [20]u8 = undefined;
+    const fp_str = std.fmt.bufPrint(&fp_buf, "0x{x}", .{fingerprint}) catch "0xdeadbeefcafebabe";
+
     return std.fmt.bufPrint(buf,
         \\.{{
         \\    .name = .{s},
         \\    .version = "0.1.0",
+        \\    .fingerprint = {s},
         \\    .minimum_zig_version = "0.16.0-dev.2535+b5bd49460",
         \\    .dependencies = .{{
         \\        .zzz = .{{
@@ -83,7 +91,7 @@ pub fn buildZigZon(name: []const u8, buf: []u8) ?[]const u8 {
         \\    }},
         \\}}
         \\
-    , .{ident}) catch null;
+    , .{ ident, fp_str }) catch null;
 }
 
 pub const main_zig =
