@@ -9,7 +9,7 @@ const test_cmd = @import("commands/test_cmd.zig");
 const deps_cmd = @import("commands/deps.zig");
 const update_cmd = @import("commands/update.zig");
 
-const version = "0.2.0-beta.6";
+const version = "0.2.0-beta.7";
 
 pub fn main(init: std.process.Init) !void {
     const allocator = init.gpa;

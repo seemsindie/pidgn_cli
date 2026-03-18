@@ -262,9 +262,8 @@ pub const main_zig_full =
     \\    },
     \\    .routes = &.{
     \\        Router.get("/", home.index),
-    \\    } ++ Router.scope("/api", &.{}, &.{
-    \\        Router.get("/status", api.status),
-    \\    }),
+    \\        Router.get("/api/status", api.status),
+    \\    },
     \\});
     \\
     \\pub fn main(init: std.process.Init) !void {
