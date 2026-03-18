@@ -13,7 +13,7 @@ const ProjectOptions = struct {
 };
 
 /// `zzz new <name>` -- scaffold a new zzz project.
-pub fn run(args: []const []const u8, _: Allocator, io: std.Io) void {
+pub fn run(args: []const []const u8, allocator: Allocator, io: std.Io) void {
     const stdout_file = std.Io.File.stdout();
     const stderr_file = std.Io.File.stderr();
 
@@ -148,7 +148,7 @@ pub fn run(args: []const []const u8, _: Allocator, io: std.Io) void {
     }
 
     // Run `zig build` to get the correct fingerprint, then patch it in
-    patchFingerprint(project_name, io);
+    patchFingerprint(project_name, allocator, io);
 
     var msg_buf: [512]u8 = undefined;
     const msg = std.fmt.bufPrint(&msg_buf,
@@ -222,60 +222,41 @@ fn makeDirPath(base: []const u8, sub: []const u8, io: std.Io) !void {
 
 /// Run `zig build` in the new project dir to get the suggested fingerprint,
 /// then patch it into build.zig.zon replacing the placeholder.
-fn patchFingerprint(project_name: []const u8, io: std.Io) void {
-    // Run `zig build` which will fail with "suggested value: 0x..."
-    var child = std.process.spawn(io, .{
+fn patchFingerprint(project_name: []const u8, allocator: Allocator, io: std.Io) void {
+    // Run `zig build` which will fail with "use this value: 0x..."
+    const result = std.process.run(allocator, io, .{
         .argv = &.{ "zig", "build" },
         .cwd = .{ .path = project_name },
-        .stdout = .ignore,
-        .stderr = .pipe,
     }) catch return;
+    defer allocator.free(result.stdout);
+    defer allocator.free(result.stderr);
 
-    // Read stderr to find the suggested fingerprint
-    var stderr_buf: [4096]u8 = undefined;
-    var stderr_len: usize = 0;
-    if (child.stderr) |stderr_file| {
-        while (stderr_len < stderr_buf.len) {
-            const n = stderr_file.read(io, stderr_buf[stderr_len..]) catch break;
-            if (n == 0) break;
-            stderr_len += n;
-        }
-    }
-    _ = child.wait(io) catch {};
-
-    const stderr_output = stderr_buf[0..stderr_len];
-
-    // Parse "suggested value: 0x<hex>" or "use this value: 0x<hex>"
+    // Parse "use this value: 0x<hex>" from stderr
     const marker = "use this value: ";
-    const fp_start = std.mem.indexOf(u8, stderr_output, marker) orelse return;
+    const fp_start = std.mem.indexOf(u8, result.stderr, marker) orelse return;
     const hex_start = fp_start + marker.len;
-    if (hex_start >= stderr_output.len) return;
+    if (hex_start >= result.stderr.len) return;
 
-    // Find end of hex value (next non-hex char after "0x")
+    // Find end of hex value
     var hex_end = hex_start;
-    while (hex_end < stderr_output.len) : (hex_end += 1) {
-        const c = stderr_output[hex_end];
+    while (hex_end < result.stderr.len) : (hex_end += 1) {
+        const c = result.stderr[hex_end];
         if (!std.ascii.isAlphanumeric(c) and c != 'x') break;
     }
-    const fingerprint = stderr_output[hex_start..hex_end];
+    const fingerprint = result.stderr[hex_start..hex_end];
     if (fingerprint.len == 0) return;
 
-    // Read build.zig.zon and replace the placeholder
+    // Read build.zig.zon via `cat`, replace placeholder, write back
     var zon_path_buf: [512]u8 = undefined;
     const zon_path = std.fmt.bufPrint(&zon_path_buf, "{s}/build.zig.zon", .{project_name}) catch return;
 
-    const file = std.Io.Dir.cwd().openFile(io, zon_path, .{ .mode = .read_write }) catch return;
-    defer file.close(io);
+    const cat_result = std.process.run(allocator, io, .{
+        .argv = &.{ "cat", zon_path },
+    }) catch return;
+    defer allocator.free(cat_result.stdout);
+    defer allocator.free(cat_result.stderr);
 
-    var file_buf: [4096]u8 = undefined;
-    var file_len: usize = 0;
-    while (file_len < file_buf.len) {
-        const n = file.read(io, file_buf[file_len..]) catch break;
-        if (n == 0) break;
-        file_len += n;
-    }
-
-    const content = file_buf[0..file_len];
+    const content = cat_result.stdout;
     const placeholder = "0x0000000000000000";
     const idx = std.mem.indexOf(u8, content, placeholder) orelse return;
 
@@ -287,8 +268,8 @@ fn patchFingerprint(project_name: []const u8, io: std.Io) void {
     @memcpy(out_buf[pos..][0..fingerprint.len], fingerprint);
     pos += fingerprint.len;
     const after = idx + placeholder.len;
-    const rest_len = file_len - after;
-    @memcpy(out_buf[pos..][0..rest_len], content[after..file_len]);
+    const rest_len = content.len - after;
+    @memcpy(out_buf[pos..][0..rest_len], content[after..content.len]);
     pos += rest_len;
 
     // Write back
