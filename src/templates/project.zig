@@ -262,7 +262,7 @@ pub const main_zig_full =
     \\    },
     \\    .routes = &.{
     \\        Router.get("/", home.index),
-    \\        Router.scope("/api", .{}, &.{
+    \\        Router.scope("/api", &.{}, &.{
     \\            Router.get("/status", api.status),
     \\        }),
     \\    },
