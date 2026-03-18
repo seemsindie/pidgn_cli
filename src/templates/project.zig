@@ -65,10 +65,8 @@ pub fn buildZigZon(name: []const u8, buf: []u8) ?[]const u8 {
     }
     const ident = ident_buf[0..ident_len];
 
-    // Generate a random fingerprint for the package
-    var fp_bytes: [8]u8 = undefined;
-    std.crypto.random.bytes(&fp_bytes);
-    const fingerprint: u64 = std.mem.readInt(u64, &fp_bytes, .big);
+    // Generate a fingerprint by hashing the project name with a seed
+    const fingerprint = std.hash.Wyhash.hash(0x7a7a7a_zig, name);
     var fp_buf: [20]u8 = undefined;
     const fp_str = std.fmt.bufPrint(&fp_buf, "0x{x}", .{fingerprint}) catch "0xdeadbeefcafebabe";
 
