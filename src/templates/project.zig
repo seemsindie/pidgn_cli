@@ -254,10 +254,10 @@ pub const main_zig_full =
     \\        zzz.errorHandler(.{}),
     \\        zzz.logger,
     \\        zzz.cors(.{}),
-    \\        zzz.bodyParser(.{}),
+    \\        zzz.bodyParser,
     \\        zzz.session(.{}),
     \\        zzz.csrf(.{}),
-    \\        zzz.staticFiles(.{ .root = "public" }),
+    \\        zzz.staticFiles(.{}),
     \\        zzz.healthCheck(.{}),
     \\    },
     \\    .routes = &.{
@@ -304,7 +304,7 @@ pub const main_zig_api =
     \\        zzz.errorHandler(.{}),
     \\        zzz.logger,
     \\        zzz.cors(.{}),
-    \\        zzz.bodyParser(.{}),
+    \\        zzz.bodyParser,
     \\        zzz.healthCheck(.{}),
     \\    },
     \\    .routes = &.{
