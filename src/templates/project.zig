@@ -262,10 +262,9 @@ pub const main_zig_full =
     \\    },
     \\    .routes = &.{
     \\        Router.get("/", home.index),
-    \\        Router.scope("/api", &.{}, &.{
-    \\            Router.get("/status", api.status),
-    \\        }),
-    \\    },
+    \\    } ++ Router.scope("/api", &.{}, &.{
+    \\        Router.get("/status", api.status),
+    \\    }),
     \\});
     \\
     \\pub fn main(init: std.process.Init) !void {
@@ -296,7 +295,7 @@ pub const main_zig_api =
     \\const Context = zzz.Context;
     \\
     \\fn status(ctx: *Context) !void {
-    \\    ctx.json(.ok, .{ .status = "ok" });
+    \\    ctx.json(.ok, "{\"status\":\"ok\"}");
     \\}
     \\
     \\const App = Router.define(.{
@@ -358,7 +357,7 @@ pub const api_controller_zig =
     \\const Context = zzz.Context;
     \\
     \\pub fn status(ctx: *Context) !void {
-    \\    ctx.json(.ok, .{ .status = "ok" });
+    \\    ctx.json(.ok, "{\"status\":\"ok\"}");
     \\}
     \\
 ;
