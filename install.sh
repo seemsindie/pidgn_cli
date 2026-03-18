@@ -2,7 +2,7 @@
 # zzz CLI installer
 #
 # Usage:
-#   curl -fsSL https://zzz.seemsindie.com/install.sh | sh
+#   curl -fsSL https://zzz.indielab.link/install.sh | sh
 #
 # Options (environment variables):
 #   ZZZ_VERSION     - Install a specific version (default: latest)
@@ -117,7 +117,7 @@ get_version() {
         | sed -n 's/.*"tag_name" *: *"\([^"]*\)".*/\1/p') || true
 
     if [ -z "${VERSION}" ]; then
-        error "Could not determine latest version. Set ZZZ_VERSION manually:\n       ZZZ_VERSION=v0.1.0 curl -fsSL https://zzz.seemsindie.com/install.sh | sh"
+        error "Could not determine latest version. Set ZZZ_VERSION manually:\n       ZZZ_VERSION=v0.1.0 curl -fsSL https://zzz.indielab.link/install.sh | sh"
     fi
 }
 

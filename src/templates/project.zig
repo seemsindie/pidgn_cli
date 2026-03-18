@@ -66,7 +66,7 @@ pub fn buildZigZon(name: []const u8, buf: []u8) ?[]const u8 {
     const ident = ident_buf[0..ident_len];
 
     // Generate a fingerprint by hashing the project name with a seed
-    const fingerprint = std.hash.Wyhash.hash(0x7a7a7a_zig, name);
+    const fingerprint = std.hash.Wyhash.hash(0x7a7a7a, name);
     var fp_buf: [20]u8 = undefined;
     const fp_str = std.fmt.bufPrint(&fp_buf, "0x{x}", .{fingerprint}) catch "0xdeadbeefcafebabe";
 

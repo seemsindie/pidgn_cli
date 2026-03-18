@@ -14,13 +14,13 @@ pub fn run(args: []const []const u8, _: Allocator, io: std.Io) void {
     ) catch {};
 
     var child = std.process.spawn(io, .{
-        .argv = &.{ "sh", "-c", "curl -fsSL https://zzz.seemsindie.com/install.sh | sh" },
+        .argv = &.{ "sh", "-c", "curl -fsSL https://zzz.indielab.link/install.sh | sh" },
         .stdout = .inherit,
         .stderr = .inherit,
     }) catch {
         stdout_file.writeStreamingAll(io,
             \\Failed to start update. Run manually:
-            \\  curl -fsSL https://zzz.seemsindie.com/install.sh | sh
+            \\  curl -fsSL https://zzz.indielab.link/install.sh | sh
             \\
         ) catch {};
         return;
