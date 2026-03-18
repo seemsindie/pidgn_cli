@@ -75,7 +75,8 @@ pub fn buildZigZon(name: []const u8, buf: []u8) ?[]const u8 {
         \\    .minimum_zig_version = "0.16.0-dev.2535+b5bd49460",
         \\    .dependencies = .{{
         \\        .zzz = .{{
-        \\            .path = "../zzz.zig",
+        \\            .url = "git+https://github.com/seemsindie/zzz.zig#12e806c5b3df8f2ff2737bb1ea501478c3385112",
+        \\            .hash = "zzz-0.2.0-beta.1-LYmrMxXCCAA0qwZtsGbE9cRFh1IspkMr9Z4bfvlN7oQ3",
         \\        }},
         \\    }},
         \\    .paths = .{{
