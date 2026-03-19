@@ -150,6 +150,28 @@ List workspace dependencies.
 zzz deps
 ```
 
+### `zzz assets`
+
+Manage the frontend asset pipeline using Bun.
+
+```bash
+zzz assets setup           # Generate starter assets (app.js, app.css, bunfig.toml)
+zzz assets setup --ssr     # Also generate SSR worker and example component
+zzz assets build           # Bundle, minify, and fingerprint assets
+zzz assets watch           # Watch and rebuild on changes
+```
+
+Creates:
+```
+assets/
+  app.js                   # JavaScript entry point
+  app.css                  # Stylesheet
+public/assets/
+  app-<hash>.js            # Fingerprinted output
+  app-<hash>.css
+  assets-manifest.json     # Original → fingerprinted name mapping
+```
+
 ### `zzz version`
 
 Show version.
@@ -166,6 +188,7 @@ cd blog
 zzz gen model Post title:string content:text published:boolean
 zzz gen controller Posts
 zzz gen channel Comments
+zzz assets setup
 zzz migrate
 zzz server
 ```
