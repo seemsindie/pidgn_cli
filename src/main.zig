@@ -8,6 +8,7 @@ const swagger_cmd = @import("commands/swagger.zig");
 const test_cmd = @import("commands/test_cmd.zig");
 const deps_cmd = @import("commands/deps.zig");
 const update_cmd = @import("commands/update.zig");
+const assets_cmd = @import("commands/assets.zig");
 
 const version = "0.2.0-beta.7";
 
@@ -55,6 +56,8 @@ pub fn main(init: std.process.Init) !void {
         return deps_cmd.run(rest, allocator, io);
     } else if (std.mem.eql(u8, command, "update")) {
         return update_cmd.run(rest, allocator, io);
+    } else if (std.mem.eql(u8, command, "assets")) {
+        return assets_cmd.run(rest, allocator, io);
     } else if (std.mem.eql(u8, command, "version") or std.mem.eql(u8, command, "--version") or std.mem.eql(u8, command, "-v")) {
         printVersion(io);
     } else if (std.mem.eql(u8, command, "help") or std.mem.eql(u8, command, "--help") or std.mem.eql(u8, command, "-h")) {
@@ -98,6 +101,9 @@ fn printUsage(io: std.Io) void {
         \\  migrate status          Show migration status
         \\  swagger                 Export OpenAPI specification
         \\  test                    Run project tests
+        \\  assets setup [--ssr]    Set up asset pipeline (JS/CSS with Bun)
+        \\  assets build            Build and fingerprint assets
+        \\  assets watch            Watch and rebuild on change
         \\  deps                    List workspace dependencies
         \\  update                  Update zzz CLI to the latest version
         \\  version                 Show version
