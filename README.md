@@ -12,13 +12,13 @@ Project scaffolding, code generation, development server, database migrations, a
 ### Shell installer (macOS and Linux)
 
 ```bash
-curl -fsSL https://zzz.seemsindie.com/install.sh | sh
+curl -fsSL https://zzz.indielab.link/install.sh | sh
 ```
 
 Install a specific version:
 
 ```bash
-ZZZ_VERSION=v0.1.0 curl -fsSL https://zzz.seemsindie.com/install.sh | sh
+ZZZ_VERSION=v0.1.0 curl -fsSL https://zzz.indielab.link/install.sh | sh
 ```
 
 ### Homebrew (macOS)
@@ -172,7 +172,7 @@ zzz server
 
 ## Documentation
 
-Full documentation available at [docs.zzz.seemsindie.com](https://docs.zzz.seemsindie.com) under the CLI section.
+Full documentation available at [docs.zzz.indielab.link](https://docs.zzz.indielab.link) under the CLI section.
 
 ## Ecosystem
 
