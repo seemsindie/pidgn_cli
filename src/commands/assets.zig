@@ -29,8 +29,6 @@ pub fn run(args: []const []const u8, allocator: Allocator, io: std.Io) !void {
 
 fn setup(allocator: Allocator, io: std.Io, args: []const []const u8) !void {
     const stdout = std.Io.File.stdout();
-    _ = allocator;
-
     var with_ssr = false;
     for (args) |arg| {
         if (std.mem.eql(u8, arg, "--ssr")) with_ssr = true;
@@ -46,10 +44,17 @@ fn setup(allocator: Allocator, io: std.Io, args: []const []const u8) !void {
     writeFileIfNotExists("assets/app.css", app_css_content);
     writeFileIfNotExists("bunfig.toml", bunfig_content);
 
+    if (with_ssr) {
+        writeFileIfNotExists("package.json", package_json_ssr_content);
+    } else {
+        writeFileIfNotExists("package.json", package_json_content);
+    }
+
     stdout.writeStreamingAll(io, "Created assets/ directory structure\n") catch {};
     stdout.writeStreamingAll(io, "  assets/app.js\n") catch {};
     stdout.writeStreamingAll(io, "  assets/app.css\n") catch {};
     stdout.writeStreamingAll(io, "  bunfig.toml\n") catch {};
+    stdout.writeStreamingAll(io, "  package.json\n") catch {};
 
     if (with_ssr) {
         makeDirIfNotExists("assets/components");
@@ -59,7 +64,20 @@ fn setup(allocator: Allocator, io: std.Io, args: []const []const u8) !void {
         stdout.writeStreamingAll(io, "  assets/components/App.jsx\n") catch {};
     }
 
+    stdout.writeStreamingAll(io, "\nInstalling dependencies...\n") catch {};
+    const install_result = runProcess(allocator, &.{ "bun", "install" });
+    if (install_result) |exit_code| {
+        if (exit_code == 0) {
+            stdout.writeStreamingAll(io, "Dependencies installed.\n") catch {};
+        } else {
+            stdout.writeStreamingAll(io, "Failed to run bun install. Run 'bun install' manually.\n") catch {};
+        }
+    } else |_| {
+        stdout.writeStreamingAll(io, "Failed to run bun install. Run 'bun install' manually.\n") catch {};
+    }
+
     stdout.writeStreamingAll(io, "\nRun 'zzz assets build' to compile assets.\n") catch {};
+    stdout.writeStreamingAll(io, "Don't forget to add node_modules/ to .gitignore\n") catch {};
 }
 
 fn build(allocator: Allocator, io: std.Io) !void {
@@ -349,6 +367,34 @@ const app_component_content =
     \\      <p>{message}</p>
     \\    </div>
     \\  );
+    \\}
+    \\
+;
+
+const package_json_content =
+    \\{
+    \\  "name": "app",
+    \\  "private": true,
+    \\  "scripts": {
+    \\    "build": "bun build assets/app.js --outdir public/assets --minify",
+    \\    "watch": "bun build assets/app.js --outdir public/assets --watch"
+    \\  }
+    \\}
+    \\
+;
+
+const package_json_ssr_content =
+    \\{
+    \\  "name": "app",
+    \\  "private": true,
+    \\  "scripts": {
+    \\    "build": "bun build assets/app.js --outdir public/assets --minify",
+    \\    "watch": "bun build assets/app.js --outdir public/assets --watch"
+    \\  },
+    \\  "dependencies": {
+    \\    "react": "^19.0.0",
+    \\    "react-dom": "^19.0.0"
+    \\  }
     \\}
     \\
 ;
