@@ -12,7 +12,7 @@ const ProjectOptions = struct {
     const DbOption = enum { none, sqlite, postgres };
 };
 
-/// `zzz new <name>` -- scaffold a new zzz project.
+/// `pidgn new <name>` -- scaffold a new pidgn project.
 pub fn run(args: []const []const u8, allocator: Allocator, io: std.Io) void {
     const stdout_file = std.Io.File.stdout();
     const stderr_file = std.Io.File.stderr();
@@ -42,7 +42,7 @@ pub fn run(args: []const []const u8, allocator: Allocator, io: std.Io) void {
     }
 
     if (name == null) {
-        stderr_file.writeStreamingAll(io, "Usage: zzz new <project_name> [--docker=false] [--db=sqlite|postgres|none] [--full] [--api]\n") catch {};
+        stderr_file.writeStreamingAll(io, "Usage: pidgn new <project_name> [--docker=false] [--db=sqlite|postgres|none] [--full] [--api]\n") catch {};
         return;
     }
 
@@ -153,7 +153,7 @@ pub fn run(args: []const []const u8, allocator: Allocator, io: std.Io) void {
     var msg_buf: [512]u8 = undefined;
     const msg = std.fmt.bufPrint(&msg_buf,
         \\
-        \\  Created new zzz project: {s}
+        \\  Created new pidgn project: {s}
         \\
         \\  To get started:
         \\    cd {s}

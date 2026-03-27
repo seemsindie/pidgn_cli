@@ -8,26 +8,26 @@ const mailer_with_templates_tmpl = @import("../templates/mailer_with_templates.z
 const mailer_html_tmpl = @import("../templates/mailer_html_template.zig");
 const mailer_txt_tmpl = @import("../templates/mailer_txt_template.zig");
 
-/// `zzz gen <type> <Name> [fields...]` -- generate code from templates.
+/// `pidgn gen <type> <Name> [fields...]` -- generate code from templates.
 pub fn run(args: []const []const u8, _: Allocator, io: std.Io) void {
     const stderr_file = std.Io.File.stderr();
 
     if (args.len < 2) {
         stderr_file.writeStreamingAll(io,
             \\Usage:
-            \\  zzz gen controller <Name>
-            \\  zzz gen model <Name> [field:type ...]
-            \\  zzz gen channel <Name>
-            \\  zzz gen mailer <Name> [--template]
+            \\  pidgn gen controller <Name>
+            \\  pidgn gen model <Name> [field:type ...]
+            \\  pidgn gen channel <Name>
+            \\  pidgn gen mailer <Name> [--template]
             \\
             \\Field types: string, text, integer, int, float, real, boolean, bool
             \\
             \\Examples:
-            \\  zzz gen controller Users
-            \\  zzz gen model Post title:string body:text user_id:integer
-            \\  zzz gen channel Chat
-            \\  zzz gen mailer Welcome
-            \\  zzz gen mailer Welcome --template
+            \\  pidgn gen controller Users
+            \\  pidgn gen model Post title:string body:text user_id:integer
+            \\  pidgn gen channel Chat
+            \\  pidgn gen mailer Welcome
+            \\  pidgn gen mailer Welcome --template
             \\
         ) catch {};
         return;
@@ -216,7 +216,7 @@ fn generateMailerWithTemplates(name_lower: []const u8, name_upper: []const u8, i
     };
 
     var html_path_buf: [256]u8 = undefined;
-    const html_path = std.fmt.bufPrint(&html_path_buf, "src/mailers/templates/{s}.html.zzz", .{name_lower}) catch return;
+    const html_path = std.fmt.bufPrint(&html_path_buf, "src/mailers/templates/{s}.html.pidgn", .{name_lower}) catch return;
     if (writeFile(html_path, html_content, io)) |_| {
         var msg_buf: [256]u8 = undefined;
         const msg = std.fmt.bufPrint(&msg_buf, "  Generated: {s}\n", .{html_path}) catch "  Generated HTML template.\n";
@@ -231,7 +231,7 @@ fn generateMailerWithTemplates(name_lower: []const u8, name_upper: []const u8, i
     };
 
     var txt_path_buf: [256]u8 = undefined;
-    const txt_path = std.fmt.bufPrint(&txt_path_buf, "src/mailers/templates/{s}.txt.zzz", .{name_lower}) catch return;
+    const txt_path = std.fmt.bufPrint(&txt_path_buf, "src/mailers/templates/{s}.txt.pidgn", .{name_lower}) catch return;
     if (writeFile(txt_path, txt_content, io)) |_| {
         var msg_buf: [256]u8 = undefined;
         const msg = std.fmt.bufPrint(&msg_buf, "  Generated: {s}\n", .{txt_path}) catch "  Generated text template.\n";

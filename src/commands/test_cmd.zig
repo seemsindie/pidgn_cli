@@ -1,7 +1,7 @@
 const std = @import("std");
 const Allocator = std.mem.Allocator;
 
-/// `zzz test` -- run project tests via `zig build test`.
+/// `pidgn test` -- run project tests via `zig build test`.
 pub fn run(args: []const []const u8, _: Allocator, io: std.Io) void {
     _ = args;
     const stdout_file = std.Io.File.stdout();

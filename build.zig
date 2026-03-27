@@ -5,7 +5,7 @@ pub fn build(b: *std.Build) void {
     const optimize = b.standardOptimizeOption(.{});
 
     const exe = b.addExecutable(.{
-        .name = "zzz",
+        .name = "pidgn",
         .root_module = b.createModule(.{
             .root_source_file = b.path("src/main.zig"),
             .target = target,
@@ -16,7 +16,7 @@ pub fn build(b: *std.Build) void {
 
     b.installArtifact(exe);
 
-    const run_step = b.step("run", "Run the zzz CLI");
+    const run_step = b.step("run", "Run the pidgn CLI");
     const run_cmd = b.addRunArtifact(exe);
     run_step.dependOn(&run_cmd.step);
     run_cmd.step.dependOn(b.getInstallStep());

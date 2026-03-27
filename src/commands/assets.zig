@@ -76,7 +76,7 @@ fn setup(allocator: Allocator, io: std.Io, args: []const []const u8) !void {
         stdout.writeStreamingAll(io, "Failed to run bun install. Run 'bun install' manually.\n") catch {};
     }
 
-    stdout.writeStreamingAll(io, "\nRun 'zzz assets build' to compile assets.\n") catch {};
+    stdout.writeStreamingAll(io, "\nRun 'pidgn assets build' to compile assets.\n") catch {};
     stdout.writeStreamingAll(io, "Don't forget to add node_modules/ to .gitignore\n") catch {};
 }
 
@@ -283,7 +283,7 @@ fn copyFile(src: []const u8, dst: []const u8) void {
 fn printUsage(io: std.Io) void {
     const stdout = std.Io.File.stdout();
     stdout.writeStreamingAll(io,
-        \\Usage: zzz assets <command>
+        \\Usage: pidgn assets <command>
         \\
         \\Commands:
         \\  setup [--ssr]   Generate starter asset files
@@ -297,9 +297,9 @@ fn printUsage(io: std.Io) void {
 
 const app_js_content =
     \\// assets/app.js — Main JavaScript entry point
-    \\// Bundled by Bun via `zzz assets build`
+    \\// Bundled by Bun via `pidgn assets build`
     \\
-    \\console.log("zzz app loaded");
+    \\console.log("pidgn app loaded");
     \\
 ;
 

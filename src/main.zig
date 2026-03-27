@@ -10,7 +10,7 @@ const deps_cmd = @import("commands/deps.zig");
 const update_cmd = @import("commands/update.zig");
 const assets_cmd = @import("commands/assets.zig");
 
-const version = "0.2.0-beta.10";
+const version = "0.3.0-beta.1";
 
 pub fn main(init: std.process.Init) !void {
     const allocator = init.gpa;
@@ -74,19 +74,19 @@ pub fn main(init: std.process.Init) !void {
 fn printVersion(io: std.Io) void {
     const stdout_file = std.Io.File.stdout();
     var buf: [64]u8 = undefined;
-    const msg = std.fmt.bufPrint(&buf, "zzz v{s}\n", .{version}) catch "zzz\n";
+    const msg = std.fmt.bufPrint(&buf, "pidgn v{s}\n", .{version}) catch "pidgn\n";
     stdout_file.writeStreamingAll(io, msg) catch {};
 }
 
 fn printUsage(io: std.Io) void {
     const stdout_file = std.Io.File.stdout();
     stdout_file.writeStreamingAll(io,
-        \\zzz - The Zig Web Framework CLI
+        \\pidgn - The Zig Web Framework CLI
         \\
-        \\Usage: zzz <command> [options]
+        \\Usage: pidgn <command> [options]
         \\
         \\Commands:
-        \\  new <name> [options]    Create a new zzz project
+        \\  new <name> [options]    Create a new pidgn project
         \\      --docker=false        Skip Docker file generation
         \\      --db=sqlite|postgres  Include database configuration
         \\      --full                Full project with controllers & middleware
@@ -105,16 +105,16 @@ fn printUsage(io: std.Io) void {
         \\  assets build            Build and fingerprint assets
         \\  assets watch            Watch and rebuild on change
         \\  deps                    List workspace dependencies
-        \\  update                  Update zzz CLI to the latest version
+        \\  update                  Update pidgn CLI to the latest version
         \\  version                 Show version
         \\  help                    Show this help message
         \\
         \\Examples:
-        \\  zzz new my_app
-        \\  zzz server
-        \\  zzz gen controller Users
-        \\  zzz gen model Post title:string body:text user_id:integer
-        \\  zzz migrate
+        \\  pidgn new my_app
+        \\  pidgn server
+        \\  pidgn gen controller Users
+        \\  pidgn gen model Post title:string body:text user_id:integer
+        \\  pidgn migrate
         \\
     ) catch {};
 }

@@ -1,4 +1,4 @@
-/// Embedded template strings for scaffolding a new zzz project.
+/// Embedded template strings for scaffolding a new pidgn project.
 pub const build_zig =
     \\const std = @import("std");
     \\
@@ -7,8 +7,8 @@ pub const build_zig =
     \\    const optimize = b.standardOptimizeOption(.{});
     \\    const env_name = b.option([]const u8, "env", "Environment: dev (default), prod, staging") orelse "dev";
     \\
-    \\    const zzz_dep = b.dependency("zzz", .{ .target = target, .optimize = optimize });
-    \\    const zzz_mod = zzz_dep.module("zzz");
+    \\    const pidgn_dep = b.dependency("pidgn", .{ .target = target, .optimize = optimize });
+    \\    const pidgn_mod = pidgn_dep.module("pidgn");
     \\
     \\    // Build config path from -Denv option
     \\    var config_path_buf: [64]u8 = undefined;
@@ -32,7 +32,7 @@ pub const build_zig =
     \\            .target = target,
     \\            .optimize = optimize,
     \\            .imports = &.{
-    \\                .{ .name = "zzz", .module = zzz_mod },
+    \\                .{ .name = "pidgn", .module = pidgn_mod },
     \\                .{ .name = "app_config", .module = app_config_mod },
     \\            },
     \\        }),
@@ -74,9 +74,9 @@ pub fn buildZigZon(name: []const u8, buf: []u8) ?[]const u8 {
         \\    .fingerprint = 0x0000000000000000,
         \\    .minimum_zig_version = "0.16.0-dev.2535+b5bd49460",
         \\    .dependencies = .{{
-        \\        .zzz = .{{
-        \\            .url = "git+https://github.com/seemsindie/zzz.zig#12e806c5b3df8f2ff2737bb1ea501478c3385112",
-        \\            .hash = "zzz-0.2.0-beta.1-LYmrMxXCCAA0qwZtsGbE9cRFh1IspkMr9Z4bfvlN7oQ3",
+        \\        .pidgn = .{{
+        \\            .url = "git+https://github.com/seemsindie/pidgn#12e806c5b3df8f2ff2737bb1ea501478c3385112",
+        \\            .hash = "pidgn-0.2.0-beta.1-LYmrMxXCCAA0qwZtsGbE9cRFh1IspkMr9Z4bfvlN7oQ3",
         \\        }},
         \\    }},
         \\    .paths = .{{
@@ -92,19 +92,19 @@ pub fn buildZigZon(name: []const u8, buf: []u8) ?[]const u8 {
 
 pub const main_zig =
     \\const std = @import("std");
-    \\const zzz = @import("zzz");
+    \\const pidgn = @import("pidgn");
     \\const app_config = @import("app_config");
     \\
-    \\const Router = zzz.Router;
-    \\const Context = zzz.Context;
+    \\const Router = pidgn.Router;
+    \\const Context = pidgn.Context;
     \\
     \\fn index(ctx: *Context) !void {
     \\    ctx.html(.ok,
     \\        \\<!DOCTYPE html>
     \\        \\<html>
-    \\        \\<head><title>Welcome to Zzz</title></head>
+    \\        \\<head><title>Welcome to Pidgn</title></head>
     \\        \\<body>
-    \\        \\  <h1>Welcome to Zzz!</h1>
+    \\        \\  <h1>Welcome to Pidgn!</h1>
     \\        \\  <p>Your new project is ready.</p>
     \\        \\</body>
     \\        \\</html>
@@ -113,8 +113,8 @@ pub const main_zig =
     \\
     \\const App = Router.define(.{
     \\    .middleware = &.{
-    \\        zzz.logger,
-    \\        zzz.healthCheck(.{}),
+    \\        pidgn.logger,
+    \\        pidgn.healthCheck(.{}),
     \\    },
     \\    .routes = &.{
     \\        Router.get("/", index),
@@ -125,12 +125,12 @@ pub const main_zig =
     \\    const allocator = init.gpa;
     \\    const io = init.io;
     \\
-    \\    var env = try zzz.Env.init(allocator, .{});
+    \\    var env = try pidgn.Env.init(allocator, .{});
     \\    defer env.deinit();
     \\
-    \\    const config = zzz.mergeWithEnv(@TypeOf(app_config.config), app_config.config, &env);
+    \\    const config = pidgn.mergeWithEnv(@TypeOf(app_config.config), app_config.config, &env);
     \\
-    \\    var server = zzz.Server.init(allocator, .{
+    \\    var server = pidgn.Server.init(allocator, .{
     \\        .host = config.host,
     \\        .port = config.port,
     \\    }, App.handler);
@@ -143,7 +143,7 @@ pub const main_zig =
 pub const config_zig =
     \\/// Shared application config struct.
     \\/// Comptime defaults come from dev.zig / prod.zig (selected by `-Denv`).
-    \\/// Runtime overrides come from `.env` + system env via `zzz.mergeWithEnv`.
+    \\/// Runtime overrides come from `.env` + system env via `pidgn.mergeWithEnv`.
     \\pub const AppConfig = struct {
     \\    host: []const u8 = "127.0.0.1",
     \\    port: u16 = 4000,
@@ -241,24 +241,24 @@ pub const style_css =
 
 pub const main_zig_full =
     \\const std = @import("std");
-    \\const zzz = @import("zzz");
+    \\const pidgn = @import("pidgn");
     \\const app_config = @import("app_config");
     \\
-    \\const Router = zzz.Router;
-    \\const Context = zzz.Context;
+    \\const Router = pidgn.Router;
+    \\const Context = pidgn.Context;
     \\const home = @import("controllers/home.zig");
     \\const api = @import("controllers/api.zig");
     \\
     \\const App = Router.define(.{
     \\    .middleware = &.{
-    \\        zzz.errorHandler(.{}),
-    \\        zzz.logger,
-    \\        zzz.cors(.{}),
-    \\        zzz.bodyParser,
-    \\        zzz.session(.{}),
-    \\        zzz.csrf(.{}),
-    \\        zzz.staticFiles(.{}),
-    \\        zzz.healthCheck(.{}),
+    \\        pidgn.errorHandler(.{}),
+    \\        pidgn.logger,
+    \\        pidgn.cors(.{}),
+    \\        pidgn.bodyParser,
+    \\        pidgn.session(.{}),
+    \\        pidgn.csrf(.{}),
+    \\        pidgn.staticFiles(.{}),
+    \\        pidgn.healthCheck(.{}),
     \\    },
     \\    .routes = &.{
     \\        Router.get("/", home.index),
@@ -270,12 +270,12 @@ pub const main_zig_full =
     \\    const allocator = init.gpa;
     \\    const io = init.io;
     \\
-    \\    var env = try zzz.Env.init(allocator, .{});
+    \\    var env = try pidgn.Env.init(allocator, .{});
     \\    defer env.deinit();
     \\
-    \\    const config = zzz.mergeWithEnv(@TypeOf(app_config.config), app_config.config, &env);
+    \\    const config = pidgn.mergeWithEnv(@TypeOf(app_config.config), app_config.config, &env);
     \\
-    \\    var server = zzz.Server.init(allocator, .{
+    \\    var server = pidgn.Server.init(allocator, .{
     \\        .host = config.host,
     \\        .port = config.port,
     \\    }, App.handler);
@@ -287,11 +287,11 @@ pub const main_zig_full =
 
 pub const main_zig_api =
     \\const std = @import("std");
-    \\const zzz = @import("zzz");
+    \\const pidgn = @import("pidgn");
     \\const app_config = @import("app_config");
     \\
-    \\const Router = zzz.Router;
-    \\const Context = zzz.Context;
+    \\const Router = pidgn.Router;
+    \\const Context = pidgn.Context;
     \\
     \\fn status(ctx: *Context) !void {
     \\    ctx.json(.ok, "{\"status\":\"ok\"}");
@@ -299,11 +299,11 @@ pub const main_zig_api =
     \\
     \\const App = Router.define(.{
     \\    .middleware = &.{
-    \\        zzz.errorHandler(.{}),
-    \\        zzz.logger,
-    \\        zzz.cors(.{}),
-    \\        zzz.bodyParser,
-    \\        zzz.healthCheck(.{}),
+    \\        pidgn.errorHandler(.{}),
+    \\        pidgn.logger,
+    \\        pidgn.cors(.{}),
+    \\        pidgn.bodyParser,
+    \\        pidgn.healthCheck(.{}),
     \\    },
     \\    .routes = &.{
     \\        Router.get("/api/status", status),
@@ -314,12 +314,12 @@ pub const main_zig_api =
     \\    const allocator = init.gpa;
     \\    const io = init.io;
     \\
-    \\    var env = try zzz.Env.init(allocator, .{});
+    \\    var env = try pidgn.Env.init(allocator, .{});
     \\    defer env.deinit();
     \\
-    \\    const config = zzz.mergeWithEnv(@TypeOf(app_config.config), app_config.config, &env);
+    \\    const config = pidgn.mergeWithEnv(@TypeOf(app_config.config), app_config.config, &env);
     \\
-    \\    var server = zzz.Server.init(allocator, .{
+    \\    var server = pidgn.Server.init(allocator, .{
     \\        .host = config.host,
     \\        .port = config.port,
     \\    }, App.handler);
@@ -330,19 +330,19 @@ pub const main_zig_api =
 ;
 
 pub const home_controller_zig =
-    \\const zzz = @import("zzz");
-    \\const Context = zzz.Context;
+    \\const pidgn = @import("pidgn");
+    \\const Context = pidgn.Context;
     \\
     \\pub fn index(ctx: *Context) !void {
     \\    ctx.html(.ok,
     \\        \\<!DOCTYPE html>
     \\        \\<html>
     \\        \\<head>
-    \\        \\  <title>Welcome to Zzz</title>
+    \\        \\  <title>Welcome to Pidgn</title>
     \\        \\  <link rel="stylesheet" href="/css/style.css">
     \\        \\</head>
     \\        \\<body>
-    \\        \\  <h1>Welcome to Zzz!</h1>
+    \\        \\  <h1>Welcome to Pidgn!</h1>
     \\        \\  <p>Your new project is ready.</p>
     \\        \\</body>
     \\        \\</html>
@@ -352,8 +352,8 @@ pub const home_controller_zig =
 ;
 
 pub const api_controller_zig =
-    \\const zzz = @import("zzz");
-    \\const Context = zzz.Context;
+    \\const pidgn = @import("pidgn");
+    \\const Context = pidgn.Context;
     \\
     \\pub fn status(ctx: *Context) !void {
     \\    ctx.json(.ok, "{\"status\":\"ok\"}");
@@ -366,7 +366,7 @@ pub const api_controller_zig =
 pub const config_zig_db =
     \\/// Shared application config struct.
     \\/// Comptime defaults come from dev.zig / prod.zig (selected by `-Denv`).
-    \\/// Runtime overrides come from `.env` + system env via `zzz.mergeWithEnv`.
+    \\/// Runtime overrides come from `.env` + system env via `pidgn.mergeWithEnv`.
     \\pub const AppConfig = struct {
     \\    host: []const u8 = "127.0.0.1",
     \\    port: u16 = 4000,
@@ -421,7 +421,7 @@ pub const dot_env_postgres =
     \\HOST=127.0.0.1
     \\PORT=4000
     \\SECRET_KEY_BASE=dev-secret-not-for-production
-    \\DATABASE_URL=postgres://zzz:zzz@localhost:5432/zzz_dev
+    \\DATABASE_URL=postgres://pidgn:pidgn@localhost:5432/pidgn_dev
     \\
 ;
 
@@ -436,7 +436,7 @@ pub const env_example_postgres =
     \\HOST=127.0.0.1
     \\PORT=4000
     \\SECRET_KEY_BASE=dev-secret-not-for-production
-    \\DATABASE_URL=postgres://zzz:zzz@localhost:5432/zzz_dev
+    \\DATABASE_URL=postgres://pidgn:pidgn@localhost:5432/pidgn_dev
     \\
 ;
 
@@ -488,8 +488,8 @@ pub const dockerfile =
     \\
     \\WORKDIR /build
     \\
-    \\# Clone zzz framework
-    \\RUN git clone --depth 1 https://github.com/seemsindie/zzz.zig.git ../zzz.zig
+    \\# Clone pidgn framework
+    \\RUN git clone --depth 1 https://github.com/seemsindie/pidgn.git ../pidgn.zig
     \\
     \\COPY . .
     \\RUN zig build -Doptimize=ReleaseSafe -Denv=prod
@@ -531,7 +531,7 @@ pub const docker_compose_yml_postgres =
     \\    environment:
     \\      HOST: "0.0.0.0"
     \\      PORT: "4000"
-    \\      DATABASE_URL: "postgres://zzz:zzz@postgres:5432/$NAME$"
+    \\      DATABASE_URL: "postgres://pidgn:pidgn@postgres:5432/$NAME$"
     \\    depends_on:
     \\      - postgres
     \\    healthcheck:
@@ -544,8 +544,8 @@ pub const docker_compose_yml_postgres =
     \\    image: postgres:17
     \\    environment:
     \\      POSTGRES_DB: $NAME$
-    \\      POSTGRES_USER: zzz
-    \\      POSTGRES_PASSWORD: zzz
+    \\      POSTGRES_USER: pidgn
+    \\      POSTGRES_PASSWORD: pidgn
     \\    ports:
     \\      - "5432:5432"
     \\    volumes:

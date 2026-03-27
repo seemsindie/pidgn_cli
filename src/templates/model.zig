@@ -2,7 +2,7 @@
 
 pub fn generateSchema(name_lower: []const u8, name_upper: []const u8, fields_zig: []const u8, buf: []u8) ?[]const u8 {
     return std.fmt.bufPrint(buf,
-        \\const schema = @import("zzz_db").Schema;
+        \\const schema = @import("pidgn_db").Schema;
         \\
         \\/// {0s} schema definition.
         \\pub const {0s} = struct {{
@@ -22,7 +22,7 @@ pub fn generateSchema(name_lower: []const u8, name_upper: []const u8, fields_zig
 
 pub fn generateMigration(table_name: []const u8, columns_sql: []const u8, buf: []u8) ?[]const u8 {
     return std.fmt.bufPrint(buf,
-        \\const MigrationContext = @import("zzz_db").MigrationContext;
+        \\const MigrationContext = @import("pidgn_db").MigrationContext;
         \\
         \\pub fn up(ctx: *MigrationContext) !void {{
         \\    try ctx.createTable("{0s}", &.{{

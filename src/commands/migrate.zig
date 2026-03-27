@@ -1,9 +1,9 @@
 const std = @import("std");
 const Allocator = std.mem.Allocator;
 
-/// `zzz migrate` -- run pending migrations.
-/// `zzz migrate rollback` -- rollback the last migration.
-/// `zzz migrate status` -- show migration status.
+/// `pidgn migrate` -- run pending migrations.
+/// `pidgn migrate rollback` -- rollback the last migration.
+/// `pidgn migrate status` -- show migration status.
 pub fn run(args: []const []const u8, _: Allocator, io: std.Io) void {
     const stdout_file = std.Io.File.stdout();
     const stderr_file = std.Io.File.stderr();
@@ -23,7 +23,7 @@ pub fn run(args: []const []const u8, _: Allocator, io: std.Io) void {
         var buf: [256]u8 = undefined;
         const msg = std.fmt.bufPrint(&buf, "Unknown migrate subcommand: {s}\n", .{sub_command}) catch "Unknown migrate subcommand.\n";
         stderr_file.writeStreamingAll(io, msg) catch {};
-        stderr_file.writeStreamingAll(io, "Usage: zzz migrate [up|rollback|status]\n") catch {};
+        stderr_file.writeStreamingAll(io, "Usage: pidgn migrate [up|rollback|status]\n") catch {};
     }
 }
 

@@ -3,9 +3,9 @@
 pub fn generate(name_lower: []const u8, name_upper: []const u8, buf: []u8) ?[]const u8 {
     return std.fmt.bufPrint(buf,
         \\const std = @import("std");
-        \\const zzz = @import("zzz");
-        \\const Context = zzz.Context;
-        \\const Router = zzz.Router;
+        \\const pidgn = @import("pidgn");
+        \\const Context = pidgn.Context;
+        \\const Router = pidgn.Router;
         \\
         \\// {0s} Controller
         \\

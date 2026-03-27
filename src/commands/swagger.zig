@@ -1,7 +1,7 @@
 const std = @import("std");
 const Allocator = std.mem.Allocator;
 
-/// `zzz swagger` -- export OpenAPI specification.
+/// `pidgn swagger` -- export OpenAPI specification.
 /// Runs the app with --swagger flag to output comptime-generated OpenAPI JSON.
 pub fn run(args: []const []const u8, _: Allocator, io: std.Io) void {
     _ = args;

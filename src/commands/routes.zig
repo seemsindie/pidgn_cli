@@ -1,7 +1,7 @@
 const std = @import("std");
 const Allocator = std.mem.Allocator;
 
-/// `zzz routes` -- list all application routes.
+/// `pidgn routes` -- list all application routes.
 /// Runs the app with --routes flag, which triggers route listing mode.
 pub fn run(args: []const []const u8, _: Allocator, io: std.Io) void {
     _ = args;

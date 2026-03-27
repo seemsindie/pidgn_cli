@@ -1,13 +1,13 @@
 const std = @import("std");
 const Allocator = std.mem.Allocator;
 
-/// `zzz server` -- build and run the app, watch for changes and restart.
+/// `pidgn server` -- build and run the app, watch for changes and restart.
 pub fn run(args: []const []const u8, _: Allocator, io: std.Io) void {
     _ = args;
     const stdout_file = std.Io.File.stdout();
     const stderr_file = std.Io.File.stderr();
 
-    stdout_file.writeStreamingAll(io, "Starting zzz development server...\n") catch {};
+    stdout_file.writeStreamingAll(io, "Starting pidgn development server...\n") catch {};
 
     while (true) {
         // Build and run

@@ -1,12 +1,12 @@
 #!/bin/sh
-# zzz CLI installer
+# pidgn CLI installer
 #
 # Usage:
-#   curl -fsSL https://zzz.indielab.link/install.sh | sh
+#   curl -fsSL https://pidgn.dev/install.sh | sh
 #
 # Options (environment variables):
-#   ZZZ_VERSION     - Install a specific version (default: latest)
-#   ZZZ_INSTALL_DIR - Installation directory (default: ~/.zzz/bin)
+#   PIDGN_VERSION     - Install a specific version (default: latest)
+#   PIDGN_INSTALL_DIR - Installation directory (default: ~/.pidgn/bin)
 #
 # Supported platforms:
 #   macOS (arm64, x86_64)
@@ -14,9 +14,9 @@
 
 set -eu
 
-REPO="seemsindie/zzz_cli"
-INSTALL_DIR="${ZZZ_INSTALL_DIR:-$HOME/.zzz/bin}"
-BINARY_NAME="zzz"
+REPO="seemsindie/pidgn_cli"
+INSTALL_DIR="${PIDGN_INSTALL_DIR:-$HOME/.pidgn/bin}"
+BINARY_NAME="pidgn"
 BASE_URL="https://github.com/${REPO}/releases"
 
 # Colors (disabled if not a terminal)
@@ -35,7 +35,7 @@ warn()  { printf "${YELLOW}warn${RESET}  %s\n" "$1"; }
 error() { printf "${RED}error${RESET} %s\n" "$1" >&2; exit 1; }
 
 main() {
-    printf "\n${BOLD}zzz CLI installer${RESET}\n\n"
+    printf "\n${BOLD}pidgn CLI installer${RESET}\n\n"
 
     need_cmd curl
     need_cmd tar
@@ -45,7 +45,7 @@ main() {
     detect_arch
     get_version
 
-    TARBALL="zzz-cli-${VERSION}-${ARCH}-${PLATFORM}.tar.gz"
+    TARBALL="pidgn-cli-${VERSION}-${ARCH}-${PLATFORM}.tar.gz"
     URL="${BASE_URL}/download/${VERSION}/${TARBALL}"
 
     info "Platform:     ${PLATFORM} ${ARCH}"
@@ -70,7 +70,7 @@ main() {
     mv "${TMPDIR}/${BINARY_NAME}" "${INSTALL_DIR}/${BINARY_NAME}"
     chmod +x "${INSTALL_DIR}/${BINARY_NAME}"
 
-    printf "\n${GREEN}${BOLD}zzz CLI ${VERSION} installed successfully!${RESET}\n\n"
+    printf "\n${GREEN}${BOLD}pidgn CLI ${VERSION} installed successfully!${RESET}\n\n"
 
     # Check if INSTALL_DIR is in PATH
     case ":${PATH}:" in
@@ -84,7 +84,7 @@ main() {
             ;;
     esac
 
-    info "Run 'zzz version' to verify."
+    info "Run 'pidgn version' to verify."
     printf "\n"
 }
 
@@ -107,8 +107,8 @@ detect_arch() {
 }
 
 get_version() {
-    if [ -n "${ZZZ_VERSION:-}" ]; then
-        VERSION="${ZZZ_VERSION}"
+    if [ -n "${PIDGN_VERSION:-}" ]; then
+        VERSION="${PIDGN_VERSION}"
         return
     fi
 
@@ -117,7 +117,7 @@ get_version() {
         | sed -n 's/.*"tag_name" *: *"\([^"]*\)".*/\1/p') || true
 
     if [ -z "${VERSION}" ]; then
-        error "Could not determine latest version. Set ZZZ_VERSION manually:\n       ZZZ_VERSION=v0.1.0 curl -fsSL https://zzz.indielab.link/install.sh | sh"
+        error "Could not determine latest version. Set PIDGN_VERSION manually:\n       PIDGN_VERSION=v0.1.0 curl -fsSL https://pidgn.dev/install.sh | sh"
     fi
 }
 
