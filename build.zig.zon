@@ -3,7 +3,12 @@
     .version = "0.3.1-beta.4",
     .fingerprint = 0xb1dd65097755840e,
     .minimum_zig_version = "0.16.0-dev.2905+5d71e3051",
-    .dependencies = .{},
+    .dependencies = .{
+        .swatcher = .{
+            .url = "https://github.com/seemsindie/swatcher/archive/c8dd6f112671a4419cf428ee3d5c9f0092d6b084.tar.gz",
+            .hash = "swatcher-0.1.0-jdPcnpq-BQDuohmpHUMShjw_mEIhaapJMdwR0EAreVov",
+        },
+    },
     .paths = .{
         "build.zig",
         "build.zig.zon",

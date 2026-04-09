@@ -7,7 +7,8 @@ pub fn run(args: []const []const u8, _: Allocator, io: std.Io) void {
     const stdout_file = std.Io.File.stdout();
     const stderr_file = std.Io.File.stderr();
 
-    stdout_file.writeStreamingAll(io, "Starting pidgn development server...\n") catch {};
+    stdout_file.writeStreamingAll(io, "Starting pidgn server...\n") catch {};
+    stdout_file.writeStreamingAll(io, "  Tip: use `pidgn dev` for auto-rebuild on file changes.\n") catch {};
 
     while (true) {
         // Build and run

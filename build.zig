@@ -4,6 +4,8 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
+    const swatcher_dep = b.dependency("swatcher", .{ .target = target });
+
     const exe = b.addExecutable(.{
         .name = "pidgn",
         .root_module = b.createModule(.{
@@ -13,6 +15,7 @@ pub fn build(b: *std.Build) void {
             .link_libc = true,
         }),
     });
+    exe.root_module.addImport("swatcher", swatcher_dep.module("swatcher"));
 
     b.installArtifact(exe);
 

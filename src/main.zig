@@ -9,6 +9,7 @@ const test_cmd = @import("commands/test_cmd.zig");
 const deps_cmd = @import("commands/deps.zig");
 const update_cmd = @import("commands/update.zig");
 const assets_cmd = @import("commands/assets.zig");
+const dev_cmd = @import("commands/dev.zig");
 
 const version = "0.3.1-beta.4";
 
@@ -40,6 +41,8 @@ pub fn main(init: std.process.Init) !void {
 
     if (std.mem.eql(u8, command, "new")) {
         return new_cmd.run(rest, allocator, io);
+    } else if (std.mem.eql(u8, command, "dev") or std.mem.eql(u8, command, "d")) {
+        return dev_cmd.run(rest, allocator, io);
     } else if (std.mem.eql(u8, command, "server") or std.mem.eql(u8, command, "s")) {
         return server_cmd.run(rest, allocator, io);
     } else if (std.mem.eql(u8, command, "routes")) {
@@ -91,7 +94,8 @@ fn printUsage(io: std.Io) void {
         \\      --db=sqlite|postgres  Include database configuration
         \\      --full                Full project with controllers & middleware
         \\      --api                 API-only mode (no templates/static files)
-        \\  server, s               Start the development server (with auto-reload)
+        \\  dev, d [build-flags]    Start dev server with file watching & auto-rebuild
+        \\  server, s               Build and run the app (no file watching)
         \\  routes                  List all application routes
         \\  gen controller <Name>   Generate a controller
         \\  gen model <Name> [fields...]  Generate a model + migration
