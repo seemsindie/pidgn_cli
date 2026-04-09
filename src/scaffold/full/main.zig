@@ -22,7 +22,6 @@ const App = Router.define(.{
     .routes = &.{
         Router.get("/", home.index),
         Router.get("/api/status", api.status),
-        Router.get("/__pidgn/live-reload", pidgn.liveReloadWs()),
     },
 });
 
