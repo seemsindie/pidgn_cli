@@ -13,12 +13,16 @@ jobs:
         include:
           - os: ubuntu-latest
             target: x86_64-linux
+            cross: true
           - os: ubuntu-latest
             target: aarch64-linux
+            cross: true
           - os: macos-latest
             target: aarch64-macos
-          - os: macos-latest
+            cross: false
+          - os: macos-13
             target: x86_64-macos
+            cross: false
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
@@ -26,7 +30,12 @@ jobs:
       with:
         version: 0.16.0-dev.2905+5d71e3051
     - name: Build
-      run: zig build -Doptimize=ReleaseSafe -Dtarget=${{ matrix.target }}
+      run: |
+        if [ "${{ matrix.cross }}" = "true" ]; then
+          zig build -Doptimize=ReleaseSafe -Dtarget=${{ matrix.target }}
+        else
+          zig build -Doptimize=ReleaseSafe
+        fi
     - name: Package
       run: tar -czf pidgn-cli-${{ github.ref_name }}-${{ matrix.target }}.tar.gz -C zig-out/bin pidgn
     - name: Upload artifact
