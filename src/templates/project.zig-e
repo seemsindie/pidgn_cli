@@ -76,7 +76,7 @@ pub fn buildZigZon(name: []const u8, buf: []u8) ?[]const u8 {
         \\    .dependencies = .{{
         \\        .pidgn = .{{
         \\            .url = "git+https://github.com/seemsindie/pidgn#cf37acf34efbddd97382e5836ffe14beb84b2d9a",
-        \\            .hash = "pidgn-0.3.1-beta.1-0tg_stmKCQCXs32KaR6ZbPAyjdezml5gXKG2AMssdPxB",
+        \\            .hash = "pidgn-0.3.0-beta.1-0tg_skRpCQB4JyPhQ5BDU2zTwz0ClaxxnDEK0epKhctP",
         \\        }},
         \\    }},
         \\    .paths = .{{
