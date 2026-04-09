@@ -2,7 +2,7 @@
 # pidgn CLI installer
 #
 # Usage:
-#   curl -fsSL https://pidgn.dev/install.sh | sh
+#   curl -fsSL https://pidgn.seemsindie.com/install.sh | sh
 #
 # Options (environment variables):
 #   PIDGN_VERSION     - Install a specific version (default: latest)
@@ -117,7 +117,7 @@ get_version() {
         | sed -n 's/.*"tag_name" *: *"\([^"]*\)".*/\1/p') || true
 
     if [ -z "${VERSION}" ]; then
-        error "Could not determine latest version. Set PIDGN_VERSION manually:\n       PIDGN_VERSION=v0.1.0 curl -fsSL https://pidgn.dev/install.sh | sh"
+        error "Could not determine latest version. Set PIDGN_VERSION manually:\n       PIDGN_VERSION=v0.1.0 curl -fsSL https://pidgn.seemsindie.com/install.sh | sh"
     fi
 }
 

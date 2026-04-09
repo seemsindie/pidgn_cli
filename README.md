@@ -12,13 +12,13 @@ Project scaffolding, code generation, development server, database migrations, a
 ### Shell installer (macOS and Linux)
 
 ```bash
-curl -fsSL https://pidgn.dev/install.sh | sh
+curl -fsSL https://pidgn.seemsindie.com/install.sh | sh
 ```
 
 Install a specific version:
 
 ```bash
-PIDGN_VERSION=v0.1.0 curl -fsSL https://pidgn.dev/install.sh | sh
+PIDGN_VERSION=v0.1.0 curl -fsSL https://pidgn.seemsindie.com/install.sh | sh
 ```
 
 ### Homebrew (macOS)
@@ -195,7 +195,7 @@ pidgn server
 
 ## Documentation
 
-Full documentation available at [docs.pidgn.dev](https://docs.pidgn.dev) under the CLI section.
+Full documentation available at [docs.pidgn.seemsindie.com](https://docs.pidgn.seemsindie.com) under the CLI section.
 
 ## Ecosystem
 
