@@ -66,15 +66,19 @@ pub fn run(args: []const []const u8, allocator: Allocator, io: std.Io) void {
         return;
     };
     makeDirPath(project_name, "src", io) catch return;
-    makeDirPath(project_name, "src/controllers", io) catch return;
     makeDirPath(project_name, "config", io) catch return;
 
-    // Skip templates/public dirs for --api mode
+    // Skip public dirs for --api mode
     if (!opts.api) {
-        makeDirPath(project_name, "templates", io) catch return;
         makeDirPath(project_name, "public", io) catch return;
         makeDirPath(project_name, "public/css", io) catch return;
         makeDirPath(project_name, "public/js", io) catch return;
+    }
+
+    // Full mode gets controllers + templates
+    if (opts.full) {
+        makeDirPath(project_name, "src/controllers", io) catch return;
+        makeDirPath(project_name, "src/templates", io) catch return;
     }
 
     // Write build.zig (replace $NAME$ with actual name)
@@ -129,10 +133,12 @@ pub fn run(args: []const []const u8, allocator: Allocator, io: std.Io) void {
         writeFilePath(project_name, "public/js/app.js", "// Add your JavaScript here\n", io) catch return;
     }
 
-    // Write controller files for --full mode
+    // Write controller and template files for --full mode
     if (opts.full) {
         writeFilePath(project_name, "src/controllers/home.zig", project_tmpl.home_controller_zig, io) catch return;
         writeFilePath(project_name, "src/controllers/api.zig", project_tmpl.api_controller_zig, io) catch return;
+        writeFilePath(project_name, "src/templates/layout.html.pidgn", project_tmpl.layout_html_pidgn, io) catch return;
+        writeFilePath(project_name, "src/templates/home.html.pidgn", project_tmpl.home_html_pidgn, io) catch return;
     }
 
     // Write Docker files (unless --docker=false)

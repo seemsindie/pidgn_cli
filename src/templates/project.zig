@@ -14,6 +14,10 @@ pub const main_zig_api = @embedFile("../scaffold/api/main.zig");
 pub const home_controller_zig = @embedFile("../scaffold/full/controllers/home.zig");
 pub const api_controller_zig = @embedFile("../scaffold/full/controllers/api.zig");
 
+// ── Templates (full mode) ────────────────────────────────────────────
+pub const layout_html_pidgn = @embedFile("../scaffold/full/templates/layout.html.pidgn");
+pub const home_html_pidgn = @embedFile("../scaffold/full/templates/home.html.pidgn");
+
 // ── Config (base) ────────────────────────────────────────────────────
 pub const config_zig = @embedFile("../scaffold/config/base/config.zig");
 pub const config_dev_zig = @embedFile("../scaffold/config/base/dev.zig");

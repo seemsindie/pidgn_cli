@@ -1,18 +1,11 @@
 const pidgn = @import("pidgn");
 const Context = pidgn.Context;
 
+const LayoutTemplate = pidgn.template(@embedFile("../templates/layout.html.pidgn"));
+const HomeContent = pidgn.template(@embedFile("../templates/home.html.pidgn"));
+
 pub fn index(ctx: *Context) !void {
-    ctx.html(.ok,
-        \\<!DOCTYPE html>
-        \\<html>
-        \\<head>
-        \\  <title>Welcome to Pidgn</title>
-        \\  <link rel="stylesheet" href="/css/style.css">
-        \\</head>
-        \\<body>
-        \\  <h1>Welcome to Pidgn!</h1>
-        \\  <p>Your new project is ready.</p>
-        \\</body>
-        \\</html>
-    );
+    try ctx.renderWithLayout(LayoutTemplate, HomeContent, .ok, .{
+        .title = "Welcome to Pidgn",
+    });
 }
