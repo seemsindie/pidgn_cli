@@ -1,0 +1,9 @@
+.env
+.env.*
+!.env.example
+zig-cache/
+zig-out/
+.zig-cache/
+.zig-out/
+.git/
+docker-compose.yml
