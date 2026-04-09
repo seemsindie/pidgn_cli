@@ -1,5 +1,8 @@
 const std = @import("std");
 const swatcher = @import("swatcher");
+const posix_c = @cImport({
+    @cInclude("unistd.h");
+});
 const Allocator = std.mem.Allocator;
 const Io = std.Io;
 const Child = std.process.Child;
@@ -13,8 +16,15 @@ fn sourceCallback(
     name: ?[*:0]const u8,
     _: ?*anyopaque,
 ) callconv(.c) void {
-    const filename = if (name) |n| std.mem.span(n) else return;
-    if (filename.len == 0) return;
+    const filename = if (name) |n| std.mem.span(n) else {
+        // Directory-level event without filename — still set flag
+        rebuild_flag.store(true, .release);
+        return;
+    };
+    if (filename.len == 0) {
+        rebuild_flag.store(true, .release);
+        return;
+    }
     if (std.mem.endsWith(u8, filename, ".zig") or
         std.mem.endsWith(u8, filename, ".pidgn"))
     {
@@ -113,7 +123,7 @@ pub fn run(args: []const []const u8, allocator: Allocator, io: std.Io) void {
     var server_child = buildAndSpawn(allocator, io, binary_name, build_args, false);
 
     while (true) {
-        io.sleep(Io.Duration.fromMilliseconds(100), .boot) catch break;
+        _ = posix_c.usleep(100_000);
 
         if (rebuild_flag.load(.acquire)) {
             rebuild_flag.store(false, .release);
