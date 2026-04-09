@@ -16,11 +16,13 @@ const App = Router.define(.{
         pidgn.session(.{}),
         pidgn.csrf(.{}),
         pidgn.staticFiles(.{}),
+        pidgn.liveReload(.{}),
         pidgn.healthCheck(.{}),
     },
     .routes = &.{
         Router.get("/", home.index),
         Router.get("/api/status", api.status),
+        Router.get("/__pidgn/live-reload", pidgn.liveReloadWs()),
     },
 });
 
