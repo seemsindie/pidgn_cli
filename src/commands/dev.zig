@@ -1,8 +1,5 @@
 const std = @import("std");
 const swatcher = @import("swatcher");
-const posix_c = @cImport({
-    @cInclude("unistd.h");
-});
 const Allocator = std.mem.Allocator;
 const Io = std.Io;
 const Child = std.process.Child;
@@ -123,7 +120,7 @@ pub fn run(args: []const []const u8, allocator: Allocator, io: std.Io) void {
     var server_child = buildAndSpawn(allocator, io, binary_name, build_args, false);
 
     while (true) {
-        _ = posix_c.usleep(100_000);
+        io.sleep(Io.Duration.fromMilliseconds(100), .boot) catch break;
 
         if (rebuild_flag.load(.acquire)) {
             rebuild_flag.store(false, .release);
