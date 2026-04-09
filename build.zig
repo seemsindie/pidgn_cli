@@ -4,7 +4,7 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    const swatcher_dep = b.dependency("swatcher", .{ .target = target });
+    const swatcher_dep = b.dependency("swatcher", .{ .target = target, .optimize = optimize });
 
     const exe = b.addExecutable(.{
         .name = "pidgn",
