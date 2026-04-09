@@ -89,7 +89,7 @@ pub fn run(args: []const []const u8, allocator: Allocator, io: std.Io) void {
         .path = "src",
         .recursive = true,
         .events = watch_events,
-        .watch_options = swatcher.c.SWATCHER_WATCH_DIRECTORIES,
+        .watch_options = 0,
         .callback = &sourceCallback,
     }) catch {};
 
@@ -97,7 +97,7 @@ pub fn run(args: []const []const u8, allocator: Allocator, io: std.Io) void {
         .path = "config",
         .recursive = true,
         .events = watch_events,
-        .watch_options = swatcher.c.SWATCHER_WATCH_DIRECTORIES,
+        .watch_options = 0,
         .callback = &sourceCallback,
     }) catch {};
 
@@ -106,7 +106,7 @@ pub fn run(args: []const []const u8, allocator: Allocator, io: std.Io) void {
         .path = "public",
         .recursive = true,
         .events = watch_events,
-        .watch_options = swatcher.c.SWATCHER_WATCH_DIRECTORIES,
+        .watch_options = 0,
         .callback = &publicCallback,
     }) catch {};
 
@@ -207,8 +207,12 @@ fn buildAndSpawn(allocator: Allocator, io: Io, binary_name: []const u8, extra_ar
 
 fn killChild(child_ptr: *?Child, io: Io) void {
     if (child_ptr.*) |*child| {
+        // kill() sends SIGKILL and may also reap the child internally.
+        // Only call wait() if the child ID is still valid.
         child.kill(io);
-        _ = child.wait(io) catch {};
+        if (child.id != null) {
+            _ = child.wait(io) catch {};
+        }
         child_ptr.* = null;
     }
 }
