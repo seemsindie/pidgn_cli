@@ -1,5 +1,9 @@
 const std = @import("std");
 const swatcher = @import("swatcher");
+const posix = @cImport({
+    @cInclude("signal.h");
+    @cInclude("sys/wait.h");
+});
 const Allocator = std.mem.Allocator;
 const Io = std.Io;
 const Child = std.process.Child;
@@ -202,13 +206,13 @@ fn buildAndSpawn(allocator: Allocator, io: Io, binary_name: []const u8, extra_ar
     return child;
 }
 
-fn killChild(child_ptr: *?Child, io: Io) void {
+fn killChild(child_ptr: *?Child, _: Io) void {
     if (child_ptr.*) |*child| {
-        // kill() sends SIGKILL and may also reap the child internally.
-        // Only call wait() if the child ID is still valid.
-        child.kill(io);
-        if (child.id != null) {
-            _ = child.wait(io) catch {};
+        // Use POSIX kill+waitpid directly to avoid Zig IO system blocking
+        // when the server has active WebSocket connections.
+        if (child.id) |pid| {
+            _ = posix.kill(pid, posix.SIGKILL);
+            _ = posix.waitpid(pid, null, 0);
         }
         child_ptr.* = null;
     }
