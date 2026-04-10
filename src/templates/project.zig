@@ -69,8 +69,8 @@ pub fn buildZigZon(name: []const u8, buf: []u8) ?[]const u8 {
         \\    .minimum_zig_version = "0.16.0-dev.2535+b5bd49460",
         \\    .dependencies = .{{
         \\        .pidgn = .{{
-        \\            .url = "git+https://github.com/seemsindie/pidgn#43deba3ce769f61a26fba1afe6401787a21b7e5e",
-        \\            .hash = "pidgn-0.3.1-beta.14-0tg_sjlmCQBwxTymIspYXn9RK6DrR0op4Piay0bENELz",
+        \\            .url = "git+https://github.com/seemsindie/pidgn#9b587dc075aa27dd3addc28dd65d1e22940028b4",
+        \\            .hash = "pidgn-0.3.1-beta.15-0tg_shhqCQD-CqXGWI2QzWNtvnnC0zGm06BUBtdfrha1",
         \\        }},
         \\    }},
         \\    .paths = .{{

@@ -11,7 +11,7 @@ const update_cmd = @import("commands/update.zig");
 const assets_cmd = @import("commands/assets.zig");
 const dev_cmd = @import("commands/dev.zig");
 
-const version = "0.3.1-beta.14";
+const version = "0.3.1-beta.15";
 
 pub fn main(init: std.process.Init) !void {
     const allocator = init.gpa;
