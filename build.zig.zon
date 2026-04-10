@@ -1,6 +1,6 @@
 .{
     .name = .pidgn_cli,
-    .version = "0.3.1-beta.15",
+    .version = "0.3.1-beta.16",
     .fingerprint = 0xb1dd65097755840e,
     .minimum_zig_version = "0.16.0-dev.2905+5d71e3051",
     .dependencies = .{
